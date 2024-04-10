@@ -18,7 +18,7 @@ export default class Background {
 
         //main background
    
-        this.gradient = context.createRadialGradient(this.scaledWidth/2, this.scaledHeight/4, 50, this.scaledWidth/2, this.scaledHeight/2, 200);
+        this.gradient = context.createRadialGradient(this.game.canvas.width/2, this.scaledHeight/4, 50, this.game.canvas.width/2, this.scaledHeight/2, 200);
         this.gradient.addColorStop(0, '#141010');
         this.gradient.addColorStop(0.2, '#680747');
         this.gradient.addColorStop(0.4, '#c3195d');
@@ -31,13 +31,13 @@ export default class Background {
             context.fillStyle = this.gradient;
         }
 
-        context.fillRect(0, 35, this.scaledWidth, this.scaledHeight);
+        context.fillRect((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5), 35, this.scaledWidth, this.scaledHeight);
         context.restore();
     }
     resize() {
         if (this.game.baseWidth >= this.game.canvas.width || this.game.baseHeight >= this.game.canvas.height) {
-            this.scaledWidth = Math.min(this.game.baseWidth, this.scaledWidth = this.game.canvas.width * 0.8);
-            this.scaledHeight = this.game.canvas.height * 0.78;
+            this.scaledWidth = Math.min(this.game.baseWidth, this.game.canvas.width);
+            this.scaledHeight = this.game.canvas.height;
         } else {
             this.scaledWidth = this.game.baseWidth;
             this.scaledHeight = this.game.baseHeight;
