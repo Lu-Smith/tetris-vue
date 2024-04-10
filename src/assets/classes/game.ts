@@ -27,7 +27,7 @@ export default class Game {
         this.canvas = canvas;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.baseHeight = 600;
+        this.baseHeight = 560;
         this.baseWidth = 400;
         this.ratioHeight = 0;
         this.ratioWidth = 0;
@@ -70,6 +70,7 @@ export default class Game {
         //background
         this.background.draw(context);
         //block
+        this.block.update();
         this.block.draw(context);
         this.speed = 2 * this.ratioHeight;
         //timer
