@@ -1,4 +1,5 @@
 import Background from './background';
+import Blocks from './blocks';
 import Block from './block';
 
 export default class Game {
@@ -15,7 +16,10 @@ export default class Game {
     //background
     background: Background;
     //block
-    block: Block;
+    blocks: Blocks[];
+    blockSize: number;
+    columns: number;
+    rows: number;
     speed: number;
     //timer
     timer: number;
@@ -37,7 +41,11 @@ export default class Game {
         //background
         this.background = new Background(this);
         //block 
-        this.block = new Block(this);
+        this.blocks = [];
+        this.blocks.push(new Blocks(this));
+        this.blockSize = 20 * this.ratioHeight;
+        this.columns = 1;
+        this.rows = 2;
         this.speed = 0;
         //timer
         this.timer = 0;
@@ -63,15 +71,29 @@ export default class Game {
         this.ratioWidth = Number((this.width / this.baseWidth).toFixed(2));
         this.timer = 0;
         this.background.resize();
-        this.block.resize();
+        this.blockSize = 20 * this.ratioHeight;
+        this.blocks.forEach(block => {
+            block.resize();
+        });
+        this.columns = 1;
+        this.rows = 2;
         this.speed = 2 * this.ratioHeight;
+        this.blocks = [];
+        this.newBlock();
     }
     render(context: CanvasRenderingContext2D, deltaTime: number, playing: boolean) {
         //background
         this.background.draw(context);
         //block
-        this.block.update();
-        this.block.draw(context);
+        this.blocks.forEach(block => {
+            block.render(context);
+            if (!this.gameOver) {
+                this.newBlock();
+            }
+            else if (this.gameOver) {
+                this.blocks = [];
+            }
+        });
         this.speed = 2 * this.ratioHeight;
         //timer
         if (!this.gameOver && playing) {
@@ -101,6 +123,13 @@ export default class Game {
             context.fillText('Your score: ' + ' - Level: ' + this.level, this.width * 0.5, this.height * 0.52);
         }
         context.restore();
-       
+    }
+    newBlock() {
+        if(Math.random() < 0.5 && this.columns < 4) {
+            this.columns++;
+        } else if (Math.random() < 0.5 && this.rows < 4) {
+            this.rows++;
+        }
+        this.blocks.push(new Blocks(this));
     }
 }
