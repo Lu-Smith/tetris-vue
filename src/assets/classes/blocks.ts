@@ -10,6 +10,7 @@ export default class Blocks {
     blocks: Block[];
     speedX: number;
     speedY: number;
+    nextBlockTrigger: boolean;
 
     constructor (game: Game) {
         this.game = game;
@@ -18,16 +19,22 @@ export default class Blocks {
         this.x = this.game.canvas.width * 0.5 - this.width * 0.5;
         this.y = -this.height;
         this.speedX = 0;
-        this.speedY = this.game.speed;
+        this.speedY = 0;
         this.blocks= [];
+        this.nextBlockTrigger = false;
         this.create();
     }
     render(context: CanvasRenderingContext2D) {
-        if (this.y < 200) this.speedY += this.game.speed;
+        
+        if (this.y < this.game.background.scaledHeight - this.height) { 
+            this.speedY += this.game.speed;
+            this.nextBlockTrigger = false;
+        } else if (this.y >= this.game.background.scaledHeight - this.height) {
             this.speedY = 0;
+            this.nextBlockTrigger = true;
+        };
         if (this.x < 0 || this.x > 200)  {
             this.speedX *= -1;
-            this.speedY = this.game.blockSize;
         }
         this.x += this.speedX;
         this.y += this.speedY;
@@ -43,11 +50,12 @@ export default class Blocks {
                 let blockY = y * this.game.blockSize;
                 this.blocks.push(new Block(this.game, blockX, blockY));
             }
-        }
+        } 
     }
     resize() {
-        this.width = this.game.columns * this.game.blockSize * 0.75;
-        this.height = this.game.rows * this.game.blockSize * 0.75;
+        this.nextBlockTrigger = false;
+        this.width = this.game.columns * this.game.blockSize;
+        this.height = this.game.rows * this.game.blockSize;
         this.x = this.game.canvas.width * 0.5 - this.width * 0.5;
     }
 }
