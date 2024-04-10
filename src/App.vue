@@ -49,7 +49,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 96vh;
+    height: 100vh;
     width: 100vw;
     overflow: hidden;
   }
