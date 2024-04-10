@@ -1,6 +1,16 @@
 <template>
   <div class="App">
-    <h1 v-if="!gameRunning">Tetris</h1>
+    <header>
+      <h1 v-if="!gameRunning">Tetris</h1>
+      <button class="mode" @click="toggleMode">
+        <span v-if="darkMode" class="material-symbols-outlined">
+        emoji_objects
+        </span>
+        <span v-if="!darkMode" class="material-symbols-outlined">
+        nightlight
+        </span>
+      </button>
+    </header>
     <DescriptionComponent v-if="!gameRunning" />
     <button @click="startNewGame" v-if="!gameRunning">Start</button>
     <MainGame v-if="gameRunning" :gameRunning="gameRunning" @toggleHome="toggleHome"/>
@@ -18,6 +28,7 @@
   import { ref } from 'vue';
 
   const gameRunning = ref(false);
+  const darkMode = ref(true);
 
   const startNewGame = () => {
     gameRunning.value = !gameRunning.value;
@@ -25,5 +36,9 @@
 
   const toggleHome = () => {
     gameRunning.value = false;
+  }
+
+  const toggleMode = () => {
+    darkMode.value = !darkMode.value;
   }
 </script>
