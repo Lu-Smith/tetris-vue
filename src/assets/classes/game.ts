@@ -63,6 +63,7 @@ export default class Game {
         this.ratioWidth = Number((this.width / this.baseWidth).toFixed(2));
         this.timer = 0;
         this.background.resize();
+        this.block.resize();
         this.speed = 2 * this.ratioHeight;
     }
     render(context: CanvasRenderingContext2D, deltaTime: number, playing: boolean) {
