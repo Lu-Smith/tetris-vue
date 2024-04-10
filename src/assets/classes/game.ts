@@ -1,6 +1,5 @@
 import Background from './background';
 import Blocks from './blocks';
-import Block from './block';
 
 export default class Game {
     canvas: HTMLCanvasElement;
@@ -45,7 +44,7 @@ export default class Game {
         this.blocks.push(new Blocks(this));
         this.blockSize = 20 * this.ratioHeight;
         this.columns = 1;
-        this.rows = 2;
+        this.rows = 1;
         this.speed = 0;
         //timer
         this.timer = 0;
@@ -76,8 +75,8 @@ export default class Game {
             block.resize();
         });
         this.columns = 1;
-        this.rows = 2;
-        this.speed = 2 * this.ratioHeight;
+        this.rows = 1;
+        this.speed = this.ratioHeight;
         this.blocks = [];
         this.newBlock();
     }
@@ -87,8 +86,9 @@ export default class Game {
         //block
         this.blocks.forEach(block => {
             block.render(context);
-            if (!this.gameOver) {
+            if (this.timer % 10 === 0 && !this.gameOver && !block.nextBlockTrigger) {
                 this.newBlock();
+                block.nextBlockTrigger = true;
             }
             else if (this.gameOver) {
                 this.blocks = [];
@@ -125,11 +125,6 @@ export default class Game {
         context.restore();
     }
     newBlock() {
-        if(Math.random() < 0.5 && this.columns < 4) {
-            this.columns++;
-        } else if (Math.random() < 0.5 && this.rows < 4) {
-            this.rows++;
-        }
         this.blocks.push(new Blocks(this));
     }
 }
