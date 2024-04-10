@@ -1,7 +1,7 @@
 <template>
   <div class="App">
     <header>
-      <h1 v-if="!gameRunning">Tetris</h1>
+      <h1>Tetris</h1>
       <button class="mode" @click="toggleMode">
         <span v-if="darkMode" class="material-symbols-outlined">
         emoji_objects
@@ -42,3 +42,26 @@
     darkMode.value = !darkMode.value;
   }
 </script>
+
+<style scoped>
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 96vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    height: 60px;
+    width: 100vw;
+    padding: 5px 20px;
+  }
+</style>
