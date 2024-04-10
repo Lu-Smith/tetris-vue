@@ -4,3 +4,25 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+button {
+  padding: 5px 7px;
+  border-radius: 5px;
+}
+
+h3 {
+  font-size: 14px;
+}
