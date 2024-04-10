@@ -110,3 +110,19 @@ const pauseGame = () => {
     animate(playing.value);
 }
 </script>
+
+<style scoped>
+  .gameContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(239, 242, 196);
+    padding-top: 10px;
+    text-align: center;
+  }
+
+  canvas {
+    width: 100vw;
+  }
+</style>
