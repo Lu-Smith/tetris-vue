@@ -2,36 +2,34 @@ import Game from './game';
 
 export default class Block {
     game: Game;
-    side: number;
     x: number;
     y: number;
-    height: number;
-    weight: number;
+    positionX: number;
+    positionY: number;
 
-    constructor (game: Game) {
+    constructor (game: Game, positionX: number, positionY: number) {
         this.game = game;
-        this.side = 20;
-        this.x = (this.game.canvas.width * 0.5 - this.side * 0.5);
-        this.y = 25;
-        this.height = this.game.background.scaledHeight + 62 - this.side;
-        this.weight = this.game.background.scaledWidth * 0.5 - this.side;
+        this.x = 0;
+        this.y = 0;
+        this.positionX = positionX;
+        this.positionY = positionY;
         
     }
-    update() {
-        if (this.y < this.height) this.y += this.game.speed;
+    update(x: number, y: number) {
+        this.x = x + this.positionX;
+        this.y = y + this.positionY;
+        this.resize();
     }
     draw(context: CanvasRenderingContext2D){
         context.save();
         context.fillStyle = 'blue';
         context.lineWidth = 2;
         context.strokeStyle = 'black';
-        context.fillRect(this.x, this.y, this.side, this.side);
-        context.strokeRect(this.x, this.y, this.side, this.side);
+        context.fillRect(this.x, this.y, this.game.blockSize, this.game.blockSize);
+        context.strokeRect(this.x, this.y, this.game.blockSize, this.game.blockSize);
         context.restore();
     }
     resize() {
-        this.x = (this.game.canvas.width * 0.5 - this.side * 0.5);
-        this.height = this.game.background.scaledHeight + 62 - this.side;
-        this.weight = this.game.background.scaledWidth * 0.5 - this.side;
+   
     }
 }
