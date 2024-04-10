@@ -75,10 +75,15 @@ const animate = (playingValue: boolean) => {
 
 const initializeCanvasAndAnimate = () => {
     if (gameCanvas.value) {
-        gameCanvas.value.width = window.innerWidth * 0.9;
-        gameCanvas.value.height = window.innerHeight;
+        if (420 >= gameCanvas.value.width || 620 >= gameCanvas.value.height) {
+            gameCanvas.value.width = Math.min(400, gameCanvas.value.width * 0.8);
+            gameCanvas.value.height = gameCanvas.value.height * 0.78;
+        } else {
+            gameCanvas.value.width = 400;
+            gameCanvas.value.height = 600;
+        }
         game = new Game(gameCanvas.value);
-        game.resize(gameCanvas.value.width, gameCanvas.value.height)
+        game.resize(gameCanvas.value.width, gameCanvas.value.height);
     }
     animate(playing.value);
 }
