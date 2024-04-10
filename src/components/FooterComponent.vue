@@ -1,5 +1,5 @@
 <template>
-    <h3>Coded by 
+    <h3 class="footer">Coded by 
        <a
            href='https://www.lunasmithart.com/' 
            target='_blank'
@@ -15,3 +15,10 @@
        .
    </h3>
 </template>
+
+<style scoped>
+  .footer {
+    height: 40px;
+    width: 100vw;
+  }
+</style>
