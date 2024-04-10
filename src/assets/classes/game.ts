@@ -1,4 +1,5 @@
 import Background from './background';
+import Block from './block';
 
 export default class Game {
     canvas: HTMLCanvasElement;
@@ -13,6 +14,8 @@ export default class Game {
     level: number;
     //background
     background: Background;
+    //block
+    block: Block;
     speed: number;
     //timer
     timer: number;
@@ -33,6 +36,8 @@ export default class Game {
         this.level = 1;
         //background
         this.background = new Background(this);
+        //block 
+        this.block = new Block(this);
         this.speed = 0;
         //timer
         this.timer = 0;
@@ -63,6 +68,8 @@ export default class Game {
     render(context: CanvasRenderingContext2D, deltaTime: number, playing: boolean) {
         //background
         this.background.draw(context);
+        //block
+        this.block.draw(context);
         this.speed = 2 * this.ratioHeight;
         //timer
         if (!this.gameOver && playing) {
