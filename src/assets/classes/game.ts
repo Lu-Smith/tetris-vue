@@ -1,14 +1,19 @@
+import Background from './background';
+
 export default class Game {
     canvas: HTMLCanvasElement;
     width: number;
     height: number;
     baseWidth: number;
     baseHeight: number;
-    ratio: number;
+    ratioHeight: number;
     ratioWidth: number;
     //game logic
     gameOver: boolean;
     level: number;
+    //background
+    background: Background;
+    speed: number;
     //timer
     timer: number;
     eventTimer: number;
@@ -19,13 +24,16 @@ export default class Game {
         this.canvas = canvas;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.baseHeight = 800;
-        this.baseWidth = 1500;
-        this.ratio = Number((this.height /this.baseHeight).toFixed(2));
-        this.ratioWidth = Number((this.width /this.baseWidth).toFixed(2));
+        this.baseHeight = 600;
+        this.baseWidth = 400;
+        this.ratioHeight = 0;
+        this.ratioWidth = 0;
         //game logic
         this.gameOver = false;
         this.level = 1;
+        //background
+        this.background = new Background(this);
+        this.speed = 0;
         //timer
         this.timer = 0;
         this.eventTimer = 0;
@@ -46,11 +54,16 @@ export default class Game {
         this.canvas.height = height;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.ratio = Number((this.height / this.baseHeight).toFixed(2));
+        this.ratioHeight = Number((this.height / this.baseHeight).toFixed(2));
         this.ratioWidth = Number((this.width / this.baseWidth).toFixed(2));
         this.timer = 0;
+        this.background.resize();
+        this.speed = 2 * this.ratioHeight;
     }
     render(context: CanvasRenderingContext2D, deltaTime: number, playing: boolean) {
+        //background
+        this.background.draw(context);
+        this.speed = 2 * this.ratioHeight;
         //timer
         if (!this.gameOver && playing) {
             this.timer += deltaTime;
