@@ -27,23 +27,23 @@ export default class Blocks {
     update() {
         //horizontal movement
         if (this.speedY !== 0) {
-            if ((this.game.keys.indexOf('ArrowLeft') > -1))   {
-                this.speedX = -this.game.blockSize;
+            if ((this.game.keys.indexOf('ArrowLeft') > -1)) {
+                 this.speedX = -this.game.blockSize;
             } else if ((this.game.keys.indexOf('ArrowRight') > -1)) {
-                this.speedX = this.game.blockSize;
-            } 
-            if (this.game.left === 1)   {
-                this.speedX = -this.game.left;
+                 this.speedX = this.game.blockSize;
+            } else {
+                this.speedX = 0;
+            }
+            if (this.game.left === 1) {
+                 this.speedX = -this.game.left;
             } else if (this.game.right === 1) {
-                this.speedX = this.game.right; 
-            } 
-            if (this.x - this.speedX === this.x - this.game.blockSize || this.x + this.speedX === this.x - this.game.blockSize) this.x += this.speedX;
+                 this.speedX = this.game.right; 
+            }
+            this.x += this.speedX;
             //horizontal boundries
-            if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5) {
-                this.speedX = 0;
+            if (this.x <= this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5) {
                 this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5;
-            } else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5) {
-                this.speedX = 0;
+            } else if (this.x >= this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5) {
                 this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5;
             }
         }

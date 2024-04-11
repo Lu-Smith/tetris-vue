@@ -29,7 +29,6 @@ export default class Game {
     swipeDistance: number;
     left: number;
     right: number;
-    movementInProgress: boolean;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -60,7 +59,6 @@ export default class Game {
         this.swipeDistance = 50;
         this.left = 0;
         this.right = 0;
-        this.movementInProgress = false;
 
         this.resize(window.innerWidth, window.innerHeight);
 
@@ -73,20 +71,12 @@ export default class Game {
 
       // Keyboard controls
 window.addEventListener('keydown', e => {
-    if (!this.movementInProgress) {
-        this.movementInProgress = true;
-        if (this.keys.length === 0) { 
-            this.keys.push(e.key);
-        }
-    }
+    if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
 });
 
 window.addEventListener('keyup', e => {
     const index = this.keys.indexOf(e.key);
-    if (index > -1) {
-        this.keys.splice(index, 1);
-    }
-    this.movementInProgress = false;
+    if (index > -1) this.keys.splice(index, 1);
 });
 
 // Touch controls
@@ -99,8 +89,7 @@ this.canvas.addEventListener('touchmove', e => {
 });
 
 this.canvas.addEventListener('touchend', e => {
-    if (!this.gameOver &&  !this.movementInProgress) {
-        this.movementInProgress = true;
+    if (!this.gameOver) {
         const touchEndX = e.changedTouches[0].pageX;
         const swipeDistance = touchEndX - this.touchStartX;
 
@@ -108,11 +97,9 @@ this.canvas.addEventListener('touchend', e => {
             if (swipeDistance > 0) {
                 this.right = this.blockSize;
                 this.left = 0;
-                this.movementInProgress = false;
             } else {
                 this.left = this.blockSize;
                 this.right = 0;
-                this.movementInProgress = false;
             }
         }
     }
@@ -142,7 +129,7 @@ this.canvas.addEventListener('touchend', e => {
         //block
         this.speed = 1;
         this.blocks.forEach(block => {
-            if (this.movementInProgress) block.update();
+            block.update();
             block.render(context);
             if (this.gameOver) {
                 this.blocks = [];
