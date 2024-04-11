@@ -5,12 +5,14 @@ export default class Background {
     scaledWidth: number;
     scaledHeight: number;
     gradient: CanvasGradient | null;
+    bottom: number;
 
     constructor(game: Game) {
         this.game = game;
-        this.scaledWidth = 400;
-        this.scaledHeight = 560;
+        this.scaledWidth = 380;
+        this.scaledHeight = 540;
         this.gradient = null;
+        this.bottom = this.game.canvas.height - (this.game.canvas.height - 63 - this.scaledHeight);
     }   
     draw(context: CanvasRenderingContext2D){
         context.save();
@@ -42,9 +44,11 @@ export default class Background {
         if (this.game.baseWidth >= this.game.canvas.width || this.game.baseHeight >= this.game.canvas.height) {
             this.scaledWidth = Math.min(this.game.baseWidth, this.game.canvas.width);
             this.scaledHeight = this.game.canvas.height * 0.78;
+            this.bottom = this.game.canvas.height - (this.game.canvas.height - 63 - this.scaledHeight);
         } else {
             this.scaledWidth = this.game.baseWidth;
             this.scaledHeight = this.game.baseHeight;
+            this.bottom = this.game.canvas.height - (this.game.canvas.height - 63 - this.scaledHeight);
         }
     }
 }
