@@ -142,7 +142,7 @@ this.canvas.addEventListener('touchend', e => {
         //block
         this.speed = 1;
         this.blocks.forEach(block => {
-            block.update();
+            if (this.movementInProgress) block.update();
             block.render(context);
             if (this.gameOver) {
                 this.blocks = [];
