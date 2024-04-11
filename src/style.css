@@ -21,6 +21,12 @@ body {
 button {
   padding: 5px 7px;
   border-radius: 5px;
+  height: 30px;
+}
+
+.material-symbols-outlined {
+  position: relative;
+  top: -3px;
 }
 
 h3 {
