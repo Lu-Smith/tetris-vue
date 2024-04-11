@@ -9,8 +9,8 @@ export default class Background {
 
     constructor(game: Game) {
         this.game = game;
-        this.scaledWidth = 380;
-        this.scaledHeight = 540;
+        this.scaledWidth = 18 * this.game.blockSize;
+        this.scaledHeight = 26 * this.game.blockSize;
         this.gradient = null;
         this.bottom = this.game.canvas.height - (this.game.canvas.height - 63 - this.scaledHeight);
     }   
