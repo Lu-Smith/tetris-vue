@@ -25,13 +25,14 @@ export default class Blocks {
         this.create();
     }
     render(context: CanvasRenderingContext2D) {
-        
         if (this.y < this.game.background.scaledHeight - this.height) { 
             this.speedY += this.game.speed;
-            this.nextBlockTrigger = false;
-        } else if (this.y >= this.game.background.scaledHeight - this.height) {
+        } else if (this.y >= this.game.background.scaledHeight + 20 - this.height) {
             this.speedY = 0;
-            this.nextBlockTrigger = true;
+            if (!this.nextBlockTrigger) {
+                this.game.newBlock();
+                this.nextBlockTrigger = true;
+            }
         };
         if (this.x < 0 || this.x > 200)  {
             this.speedX *= -1;
