@@ -25,6 +25,12 @@ export default class Game {
     eventTimer: number;
     eventInterval: number;
     eventUpdate: boolean;
+    //mobile-keyboard
+    keys: string[];
+    touchStartX: number;
+    swipeDistance: number;
+    left: number;
+    right: number;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -51,6 +57,12 @@ export default class Game {
         this.eventTimer = 0;
         this.eventInterval = 100;
         this.eventUpdate = false;
+        //mobile-keybord
+        this.keys = [];
+        this.touchStartX = 0;
+        this.swipeDistance = 50;
+        this.left = 0;
+        this.right = 0;
 
         this.resize(window.innerWidth, window.innerHeight);
 
@@ -60,6 +72,42 @@ export default class Game {
                 this.resize(target.innerWidth, target.innerHeight);
             }
         });
+
+      //keybord controls
+      window.addEventListener('keydown', e => {
+        if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);  
+    });
+
+    window.addEventListener('keyup', e => {
+        const index = this.keys.indexOf(e.key);
+        if (index > -1) this.keys.splice(index, 1);
+    })
+
+    //touch controls
+    this.canvas.addEventListener('touchstart', e => {
+        this.touchStartX = e.changedTouches[0].pageX;
+    });
+
+    this.canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+    })
+
+    this.canvas.addEventListener('touchend', e => {
+        if (!this.gameOver) {
+            if (e.changedTouches[0].pageX - this.touchStartX > (this.swipeDistance * 2)) {
+                this.right = 1;
+                this.left = 0;
+            } else if (e.changedTouches[0].pageX - this.touchStartX < -(this.swipeDistance * 2)) {
+                this.left = 1;
+                this.right = 0;
+            } else if (e.changedTouches[0].pageX - this.touchStartX <= (this.swipeDistance * 2) && e.changedTouches[0].pageX - this.touchStartX  >= -(this.swipeDistance * 2)) {
+                this.right = 0;
+                this.left = 0;
+            }
+        } else {
+            this.resize(window.innerWidth, window.innerHeight);
+        }
+    });
     }
     resize(width: number, height: number) {  
         this.canvas.width = width;
@@ -73,6 +121,7 @@ export default class Game {
         this.blockSize = 20 * this.ratioHeight;
         this.blocks.forEach(block => {
             block.resize();
+            block.update();
         });
         this.columns = 1;
         this.rows = 1;
@@ -86,6 +135,7 @@ export default class Game {
         //block
         this.blocks.forEach(block => {
             block.render(context);
+            block.update();
             if (this.gameOver) {
                 this.blocks = [];
             }
