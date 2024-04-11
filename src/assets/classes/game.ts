@@ -86,11 +86,12 @@ export default class Game {
         //block
         this.blocks.forEach(block => {
             block.render(context);
-            if (this.timer % 10 === 0 && !this.gameOver && !block.nextBlockTrigger) {
-                this.newBlock();
-                block.nextBlockTrigger = true;
-            }
-            else if (this.gameOver) {
+            // if (!this.gameOver && !block.nextBlockTrigger) {
+            //     this.newBlock();
+            //     block.nextBlockTrigger = true;
+            // }
+            // else 
+            if (this.gameOver) {
                 this.blocks = [];
             }
         });
