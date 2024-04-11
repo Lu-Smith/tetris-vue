@@ -7,8 +7,6 @@ export default class Game {
     height: number;
     baseWidth: number;
     baseHeight: number;
-    ratioHeight: number;
-    ratioWidth: number;
     //game logic
     gameOver: boolean;
     level: number;
@@ -31,15 +29,15 @@ export default class Game {
     swipeDistance: number;
     left: number;
     right: number;
+    movementInProgress: boolean;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.baseHeight = 540;
-        this.baseWidth = 380;
-        this.ratioHeight = 0;
-        this.ratioWidth = 0;
+        this.blockSize = 20;
+        this.baseWidth =  18 * this.blockSize;
+        this.baseHeight = 26 * this.blockSize;
         //game logic
         this.gameOver = false;
         this.level = 1;
@@ -48,7 +46,6 @@ export default class Game {
         //block 
         this.blocks = [];
         this.blocks.push(new Blocks(this));
-        this.blockSize = 20 * this.ratioHeight;
         this.columns = 1;
         this.rows = 1;
         this.speed = 0;
@@ -63,6 +60,7 @@ export default class Game {
         this.swipeDistance = 50;
         this.left = 0;
         this.right = 0;
+        this.movementInProgress = false;
 
         this.resize(window.innerWidth, window.innerHeight);
 
@@ -73,59 +71,68 @@ export default class Game {
             }
         });
 
-      //keybord controls
-      window.addEventListener('keydown', e => {
-        if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);  
-    });
-
-    window.addEventListener('keyup', e => {
-        const index = this.keys.indexOf(e.key);
-        if (index > -1) this.keys.splice(index, 1);
-    })
-
-    //touch controls
-    this.canvas.addEventListener('touchstart', e => {
-        this.touchStartX = e.changedTouches[0].pageX;
-    });
-
-    this.canvas.addEventListener('touchmove', e => {
-        e.preventDefault();
-    })
-
-    this.canvas.addEventListener('touchend', e => {
-        if (!this.gameOver) {
-            if (e.changedTouches[0].pageX - this.touchStartX > (this.swipeDistance * 2)) {
-                this.right = 1;
-                this.left = 0;
-            } else if (e.changedTouches[0].pageX - this.touchStartX < -(this.swipeDistance * 2)) {
-                this.left = 1;
-                this.right = 0;
-            } else if (e.changedTouches[0].pageX - this.touchStartX <= (this.swipeDistance * 2) && e.changedTouches[0].pageX - this.touchStartX  >= -(this.swipeDistance * 2)) {
-                this.right = 0;
-                this.left = 0;
-            }
-        } else {
-            this.resize(window.innerWidth, window.innerHeight);
+      // Keyboard controls
+window.addEventListener('keydown', e => {
+    if (!this.movementInProgress) {
+        this.movementInProgress = true;
+        if (this.keys.length === 0) { 
+            this.keys.push(e.key);
         }
-    });
+    }
+});
+
+window.addEventListener('keyup', e => {
+    const index = this.keys.indexOf(e.key);
+    if (index > -1) {
+        this.keys.splice(index, 1);
+    }
+    this.movementInProgress = false;
+});
+
+// Touch controls
+this.canvas.addEventListener('touchstart', e => {
+    this.touchStartX = e.changedTouches[0].pageX;
+});
+
+this.canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+});
+
+this.canvas.addEventListener('touchend', e => {
+    if (!this.gameOver &&  !this.movementInProgress) {
+        this.movementInProgress = true;
+        const touchEndX = e.changedTouches[0].pageX;
+        const swipeDistance = touchEndX - this.touchStartX;
+
+        if (Math.abs(swipeDistance) > (this.swipeDistance * 2)) {
+            if (swipeDistance > 0) {
+                this.right = this.blockSize;
+                this.left = 0;
+                this.movementInProgress = false;
+            } else {
+                this.left = this.blockSize;
+                this.right = 0;
+                this.movementInProgress = false;
+            }
+        }
+    }
+});
+
     }
     resize(width: number, height: number) {  
         this.canvas.width = width;
         this.canvas.height = height;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.ratioHeight = Number((this.height / this.baseHeight).toFixed(2));
-        this.ratioWidth = Number((this.width / this.baseWidth).toFixed(2));
         this.timer = 0;
         this.background.resize();
-        this.blockSize = 20 * this.ratioHeight;
+        this.blockSize = 20;
         this.blocks.forEach(block => {
             block.resize();
-            block.update();
         });
         this.columns = 1;
         this.rows = 1;
-        this.speed = 2;
+        this.speed = 1;
         this.blocks = [];
         if (this.blocks.length < 1) this.newBlock();
     }
@@ -133,14 +140,14 @@ export default class Game {
         //background
         this.background.draw(context);
         //block
+        this.speed = 1;
         this.blocks.forEach(block => {
-            block.render(context);
             block.update();
+            block.render(context);
             if (this.gameOver) {
                 this.blocks = [];
             }
         });
-        this.speed = 2;
         //timer
         if (!this.gameOver && playing) {
             this.timer += deltaTime;
