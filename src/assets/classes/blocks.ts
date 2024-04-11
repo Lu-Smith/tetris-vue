@@ -26,23 +26,33 @@ export default class Blocks {
     }
     update() {
         //horizontal movement
-        if ((this.game.keys.indexOf('ArrowLeft') > -1 ))   {
-            this.x -= this.game.speed;
-        } else if ((this.game.keys.indexOf('ArrowRight') > -1)) {
-            this.x += this.game.speed;
-        } 
-        if (this.game.left === 1)   {
-            this.x -= this.game.left;
-        } else if (this.game.right === 1) {
-            this.x += this.game.right;
-        } 
-        //horizontal boundries
-        if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5;
-        else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width) this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width;
-    }
-    render(context: CanvasRenderingContext2D) {
+        if (this.speedY !== 0) {
+            if ((this.game.keys.indexOf('ArrowLeft') > -1))   {
+                this.x -= this.game.blockSize;
+            } else if ((this.game.keys.indexOf('ArrowRight') > -1)) {
+                this.x += this.game.blockSize;
+            } 
+            this.game.movementInProgress = false;
+            console.log(this.x);
+            if (this.game.left === 1)   {
+                this.x -= this.game.left;
+            } else if (this.game.right === 1) {
+                this.x += this.game.right;
+            } 
+            //horizontal boundries
+            if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5) this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5;
+            else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5) this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5;
+        }
+        //veritcal movement
         if (this.y < this.game.background.scaledHeight - this.height) { 
-            this.speedY = this.game.speed;
+            if ((this.game.keys.indexOf('ArrowDown') > -1))   {
+                    this.speedY = 10 * this.game.speed;
+            } else {
+                this.speedY = this.game.speed;
+            }
+        } else if (this.y + this.height + 10 >= this.game.background.bottom && this.y + this.height < this.game.background.bottom ) {
+            this.speedY = 1;
+        //vertical boundries
         } else if (this.y + this.height >= this.game.background.bottom) {
             this.speedY = 0;
             if (!this.nextBlockTrigger) {
@@ -52,9 +62,9 @@ export default class Blocks {
                 this.nextBlockTrigger = true;
             }
         };
-        if (this.x < 0 || this.x > 200)  {
-            this.speedX *= -1;
-        }
+    }
+    render(context: CanvasRenderingContext2D) {
+        console.log(this.x);
         this.x += this.speedX;
         this.y += this.speedY;
         this.blocks.forEach(block => {
