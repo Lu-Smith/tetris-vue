@@ -28,21 +28,27 @@ export default class Blocks {
         //horizontal movement
         if (this.speedY !== 0) {
             if ((this.game.keys.indexOf('ArrowLeft') > -1))   {
-                this.x -= this.game.blockSize;
+                this.speedX = -this.game.blockSize;
             } else if ((this.game.keys.indexOf('ArrowRight') > -1)) {
-                this.x += this.game.blockSize;
+                this.speedX = this.game.blockSize;
             } 
-            this.game.movementInProgress = false;
-            console.log(this.x);
             if (this.game.left === 1)   {
-                this.x -= this.game.left;
+                this.speedX = -this.game.left;
             } else if (this.game.right === 1) {
-                this.x += this.game.right;
+                this.speedX = this.game.right; 
             } 
+            if (this.x - this.speedX === this.x - this.game.blockSize || this.x + this.speedX === this.x - this.game.blockSize) this.x += this.speedX;
             //horizontal boundries
-            if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5) this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5;
-            else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5) this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5;
+            if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5) {
+                this.speedX = 0;
+                this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize * 0.5;
+            } else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5) {
+                this.speedX = 0;
+                this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize * 0.5;
+            }
         }
+    }
+    render(context: CanvasRenderingContext2D) {
         //veritcal movement
         if (this.y < this.game.background.scaledHeight - this.height) { 
             if ((this.game.keys.indexOf('ArrowDown') > -1))   {
@@ -62,10 +68,6 @@ export default class Blocks {
                 this.nextBlockTrigger = true;
             }
         };
-    }
-    render(context: CanvasRenderingContext2D) {
-        console.log(this.x);
-        this.x += this.speedX;
         this.y += this.speedY;
         this.blocks.forEach(block => {
             block.update(this.x, this.y);
