@@ -30,8 +30,8 @@ export default class Game {
         this.canvas = canvas;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.baseHeight = 560;
-        this.baseWidth = 400;
+        this.baseHeight = 540;
+        this.baseWidth = 380;
         this.ratioHeight = 0;
         this.ratioWidth = 0;
         //game logic
@@ -76,9 +76,9 @@ export default class Game {
         });
         this.columns = 1;
         this.rows = 1;
-        this.speed = this.ratioHeight;
+        this.speed = 2;
         this.blocks = [];
-        this.newBlock();
+        if (this.blocks.length < 1) this.newBlock();
     }
     render(context: CanvasRenderingContext2D, deltaTime: number, playing: boolean) {
         //background
@@ -86,16 +86,11 @@ export default class Game {
         //block
         this.blocks.forEach(block => {
             block.render(context);
-            // if (!this.gameOver && !block.nextBlockTrigger) {
-            //     this.newBlock();
-            //     block.nextBlockTrigger = true;
-            // }
-            // else 
             if (this.gameOver) {
                 this.blocks = [];
             }
         });
-        this.speed = 2 * this.ratioHeight;
+        this.speed = 2;
         //timer
         if (!this.gameOver && playing) {
             this.timer += deltaTime;
