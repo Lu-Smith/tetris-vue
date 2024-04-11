@@ -26,10 +26,12 @@ export default class Blocks {
     }
     render(context: CanvasRenderingContext2D) {
         if (this.y < this.game.background.scaledHeight - this.height) { 
-            this.speedY += this.game.speed;
-        } else if (this.y >= this.game.background.scaledHeight + 20 - this.height) {
+            this.speedY = this.game.speed;
+        } else if (this.y + this.height >= this.game.background.bottom) {
             this.speedY = 0;
             if (!this.nextBlockTrigger) {
+                // const lastBlock = this.blocks[this.blocks.length - 1];
+                // this.game.background.bottom = this.game.background.bottom - lastBlock.y  - this.game.blockSize;
                 this.game.newBlock();
                 this.nextBlockTrigger = true;
             }
@@ -58,5 +60,7 @@ export default class Blocks {
         this.width = this.game.columns * this.game.blockSize;
         this.height = this.game.rows * this.game.blockSize;
         this.x = this.game.canvas.width * 0.5 - this.width * 0.5;
+        this.speedY = 0;
+        this.speedX = 0;
     }
 }
