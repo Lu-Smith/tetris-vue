@@ -72,6 +72,9 @@ export default class Game {
       // Keyboard controls
 window.addEventListener('keydown', e => {
     if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
+    this.blocks.forEach(block => {
+        block.update();
+    });
 });
 
 window.addEventListener('keyup', e => {
@@ -129,7 +132,6 @@ this.canvas.addEventListener('touchend', e => {
         //block
         this.speed = 1;
         this.blocks.forEach(block => {
-            block.update();
             block.render(context);
             if (this.gameOver) {
                 this.blocks = [];
