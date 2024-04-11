@@ -19,7 +19,7 @@ export default class Block {
         this.x = x + this.positionX;
         this.y = y + this.positionY;
         this.resize();
-    }
+    } 
     draw(context: CanvasRenderingContext2D){
         context.save();
         context.fillStyle = 'blue';
