@@ -75,12 +75,12 @@ const animate = (playingValue: boolean) => {
 
 const initializeCanvasAndAnimate = () => {
     if (gameCanvas.value) {
-        if (420 >= gameCanvas.value.width || 580 >= gameCanvas.value.height) {
-            gameCanvas.value.width = Math.min(400, gameCanvas.value.width * 0.8);
+        if (400 >= gameCanvas.value.width || 560 >= gameCanvas.value.height) {
+            gameCanvas.value.width = Math.min(380, gameCanvas.value.width * 0.8);
             gameCanvas.value.height = gameCanvas.value.height * 0.78;
         } else {
-            gameCanvas.value.width = 400;
-            gameCanvas.value.height = 560;
+            gameCanvas.value.width = 380;
+            gameCanvas.value.height = 540;
         }
         game = new Game(gameCanvas.value);
         game.resize(gameCanvas.value.width, gameCanvas.value.height);
@@ -120,6 +120,18 @@ const pauseGame = () => {
     background-color: rgb(239, 242, 196);
     padding-top: 10px;
     text-align: center;
+  }
+
+  .buttonsContainer {
+    text-align: right;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 20px;
+    width: 100vw;
+    height: 20px;
+    padding-right: 20px;
   }
 
   canvas {
