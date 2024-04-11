@@ -24,6 +24,22 @@ export default class Blocks {
         this.nextBlockTrigger = false;
         this.create();
     }
+    update() {
+        //horizontal movement
+        if ((this.game.keys.indexOf('ArrowLeft') > -1 ))   {
+            this.x -= this.game.speed;
+        } else if ((this.game.keys.indexOf('ArrowRight') > -1)) {
+            this.x += this.game.speed;
+        } 
+        if (this.game.left === 1)   {
+            this.x -= this.game.left;
+        } else if (this.game.right === 1) {
+            this.x += this.game.right;
+        } 
+        //horizontal boundries
+        if (this.x < this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) this.x = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5;
+        else if (this.x > this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width) this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width;
+    }
     render(context: CanvasRenderingContext2D) {
         if (this.y < this.game.background.scaledHeight - this.height) { 
             this.speedY = this.game.speed;
