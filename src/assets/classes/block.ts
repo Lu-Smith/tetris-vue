@@ -25,8 +25,8 @@ export default class Block {
         context.fillStyle = 'blue';
         context.lineWidth = 2;
         context.strokeStyle = 'black';
-        context.fillRect(this.x, this.y, this.game.blockSize, this.game.blockSize);
-        context.strokeRect(this.x, this.y, this.game.blockSize, this.game.blockSize);
+        context.fillRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
+        context.strokeRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
         context.restore();
     }
     resize() {
