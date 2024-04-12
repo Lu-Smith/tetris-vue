@@ -15,7 +15,6 @@ export default class Block {
         this.positionX = positionX;
         this.positionY = positionY;
         this.color = color;
-        
     }
     update(x: number, y: number) {
         this.x = x + this.positionX;
@@ -23,7 +22,7 @@ export default class Block {
     } 
     draw(context: CanvasRenderingContext2D){
         context.save();
-        context.fillStyle = this.color;
+        context.fillStyle = this.color; 
         context.lineWidth = 2;
         context.strokeStyle = 'black';
         context.fillRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
