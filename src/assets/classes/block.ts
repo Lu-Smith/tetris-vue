@@ -6,13 +6,15 @@ export default class Block {
     y: number;
     positionX: number;
     positionY: number;
+    color: string;
 
-    constructor (game: Game, positionX: number, positionY: number) {
+    constructor (game: Game, positionX: number, positionY: number, color: string) {
         this.game = game;
         this.x = 0;
         this.y = 0;
         this.positionX = positionX;
         this.positionY = positionY;
+        this.color = color;
         
     }
     update(x: number, y: number) {
@@ -21,15 +23,7 @@ export default class Block {
     } 
     draw(context: CanvasRenderingContext2D){
         context.save();
-        if (this.game.rows === 1) {
-            context.fillStyle = 'blue';
-        } else if (this.game.rows === 2) {
-            context.fillStyle = 'orange';
-        } else if (this.game.rows === 3) {
-            context.fillStyle = 'green';
-        } else {
-            context.fillStyle = 'yellow';
-        }
+        context.fillStyle = this.color;
         context.lineWidth = 2;
         context.strokeStyle = 'black';
         context.fillRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
