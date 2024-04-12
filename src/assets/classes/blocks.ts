@@ -79,7 +79,17 @@ export default class Blocks {
             for(let x = 0; x < this.game.columns; x++) {
                 let blockX = x * this.game.blockSize;
                 let blockY = y * this.game.blockSize;
-                this.blocks.push(new Block(this.game, blockX, blockY));
+                let color = ''; // Define a color variable
+                if (this.game.rows === 1) {
+                    color = 'blue';
+                } else if (this.game.rows === 2) {
+                    color = 'orange';
+                } else if (this.game.rows === 3) {
+                    color = 'green';
+                } else {
+                    color = 'yellow';
+                }
+                this.blocks.push(new Block(this.game, blockX, blockY, color));
             }
         } 
     }
