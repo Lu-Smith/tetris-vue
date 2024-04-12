@@ -50,25 +50,25 @@ export default class Blocks {
     }
     render(context: CanvasRenderingContext2D) {
         //veritcal movement
-        if (this.y < this.game.background.scaledHeight - this.height) { 
+        if (this.y < this.game.background.bottom - this.height) { 
             if ((this.game.keys.indexOf('ArrowDown') > -1))   {
                     this.speedY = 10 * this.game.speed;
             } else {
                 this.speedY = this.game.speed;
             }
-        } else if (this.y + this.height + 10 >= this.game.background.bottom && this.y + this.height < this.game.background.bottom ) {
-            this.speedY = 1;
+            this.y += this.speedY;
         //vertical boundries
-        } else if (this.y + this.height >= this.game.background.bottom) {
+        } else if (this.y >= this.game.background.bottom - this.height) {
+            this.y = this.game.background.bottom - this.height;
             this.speedY = 0;
             if (!this.nextBlockTrigger) {
-                // const lastBlock = this.blocks[this.blocks.length - 1];
-                // this.game.background.bottom = this.game.background.bottom - lastBlock.y  - this.game.blockSize;
-                this.game.newBlock();
+                setTimeout(() => {
+                    this.game.newBlock();
+                }, 1000)
                 this.nextBlockTrigger = true;
             }
         };
-        this.y += this.speedY;
+       
         this.blocks.forEach(block => {
             block.update(this.x, this.y);
             block.draw(context);
