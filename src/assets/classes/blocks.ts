@@ -65,7 +65,7 @@ export default class Blocks {
             } else if (this.x >= this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize) {
                 this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize;
             }
-        }
+        }    
     }
     render(context: CanvasRenderingContext2D) {
         //veritcal movement
