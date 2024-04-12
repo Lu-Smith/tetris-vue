@@ -45,8 +45,8 @@ export default class Game {
         //block 
         this.blocks = [];
         this.blocks.push(new Blocks(this));
+        this.rows = 1;     
         this.columns = 1;
-        this.rows = 1;
         this.speed = 0;
         //timer
         this.timer = 0;
@@ -120,8 +120,8 @@ this.canvas.addEventListener('touchend', e => {
         this.blocks.forEach(block => {
             block.resize();
         });
-        this.columns = 1;
-        this.rows = 1;
+        // this.columns = 1;
+        // this.rows = 1;
         this.speed = 1;
         this.blocks = [];
         if (this.blocks.length < 1) this.newBlock();
@@ -167,6 +167,7 @@ this.canvas.addEventListener('touchend', e => {
         context.restore();
     }
     newBlock() {
+        this.rows = Math.floor(Math.random() * 2 + 1);
         this.blocks.push(new Blocks(this));
     }
 }
