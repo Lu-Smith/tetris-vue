@@ -167,7 +167,7 @@ this.canvas.addEventListener('touchend', e => {
         context.restore();
     }
     newBlock() {
-        this.rows = Math.floor(Math.random() * 2 + 1);
+        this.rows = Math.floor(Math.random() * 3 + 2);
         this.blocks.push(new Blocks(this));
     }
 }
