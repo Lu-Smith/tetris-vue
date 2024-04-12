@@ -18,18 +18,22 @@ export default class Block {
     update(x: number, y: number) {
         this.x = x + this.positionX;
         this.y = y + this.positionY;
-        this.resize();
     } 
     draw(context: CanvasRenderingContext2D){
         context.save();
-        context.fillStyle = 'blue';
+        if (this.game.rows === 1) {
+            context.fillStyle = 'blue';
+        } else if (this.game.rows === 2) {
+            context.fillStyle = 'orange';
+        } else if (this.game.rows === 3) {
+            context.fillStyle = 'green';
+        } else {
+            context.fillStyle = 'yellow';
+        }
         context.lineWidth = 2;
         context.strokeStyle = 'black';
         context.fillRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
         context.strokeRect(this.x - this.game.blockSize * 0.5, this.y, this.game.blockSize, this.game.blockSize);
         context.restore();
-    }
-    resize() {
-   
     }
 }
