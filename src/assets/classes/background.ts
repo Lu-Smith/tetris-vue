@@ -13,7 +13,42 @@ export default class Background {
         this.scaledHeight = 26 * this.game.blockSize;
         this.gradient = null;
         this.bottom = this.game.canvas.height - (this.game.canvas.height - 63 - this.scaledHeight);
-    }   
+    } 
+    drawGrid(context: CanvasRenderingContext2D) {
+        context.save();
+        context.fillStyle = '#fff';
+        context.strokeStyle = '#fff'; 
+        context.lineWidth = 1; 
+        context.font = '8px Arial'; 
+    
+        // Draw vertical grid lines and display numbers
+        for (let i = 0; i < this.game.grid.length; i++) {
+            for (let j = 0; j < this.game.grid[i].length; j++) {
+                // Calculate position to display number
+                const x = (this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5) + j * this.game.blockSize + this.game.blockSize / 2;
+                const y = 65 + i * this.game.blockSize + this.game.blockSize / 2;
+    
+                // Draw number
+                context.fillText(this.game.grid[i][j].toString(), x - 3, y + 4);
+    
+                // Draw vertical grid line
+                context.beginPath();
+                context.moveTo((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5) + j * this.game.blockSize, 65);
+                context.lineTo((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5) + j * this.game.blockSize, this.scaledHeight + 65);
+                context.stroke();
+            }
+        }
+    
+        // Draw horizontal grid lines
+        for (let i = 0; i <= this.scaledHeight; i += this.game.blockSize) {
+            context.beginPath();
+            context.moveTo((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5), 65 + i);
+            context.lineTo((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5) + this.scaledWidth, 65 + i);
+            context.stroke();
+        }
+    
+        context.restore();
+    }  
     draw(context: CanvasRenderingContext2D){
         context.save();
         context.clearRect(0, 0, this.game.width, this.game.height);
@@ -38,6 +73,7 @@ export default class Background {
         }
 
         context.fillRect((this.game.canvas.width * 0.5) - (this.scaledWidth * 0.5), 65, this.scaledWidth, this.scaledHeight);
+        this.drawGrid(context);
         context.restore();
     }
     resize() {
