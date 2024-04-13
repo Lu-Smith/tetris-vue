@@ -69,25 +69,28 @@ export default class Blocks {
         }   
     }
     calculateCoveredCells() {
-    // Initialize coveredCells with the same dimensions as this.game.grid
-    const coveredCells: number[][] = [];
+        // Initialize coveredCells with the same dimensions as this.game.grid
+        const coveredCells: number[][] = [];
 
-    // Calculate the range of grid cells covered by the block
-    const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize);
-    const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize);
-    const startY = Math.floor(this.y / this.game.blockSize);
-    const endY = Math.floor((this.y + this.height) / this.game.blockSize);
+        // Calculate the range of grid cells covered by the block
+        const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize);
+        const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize);
+        const startY = Math.floor(this.y / this.game.blockSize);
+        const endY = Math.floor((this.y + this.height) / this.game.blockSize);
 
-    // Iterate over the range of covered cells and update coveredCells
     for (let y = startY; y < endY; y++) {
-        coveredCells.push([]);
         for (let x = startX; x < endX; x++) {
-            coveredCells[y - startY].push(1);
+            coveredCells.push([y, x]);                                
         }
     }
 
-    console.log(coveredCells);
-    }   
+    for (let [y, x] of coveredCells) {
+    console.log(y-3, x);
+        const rowIndex = y - 3;
+        this.game.grid[rowIndex][x] = 0;
+    }
+    console.log(this.game.grid);
+}
     render(context: CanvasRenderingContext2D) {
         //veritcal movement
         if (this.y < this.game.background.bottom - this.height) { 
