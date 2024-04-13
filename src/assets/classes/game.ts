@@ -12,6 +12,7 @@ export default class Game {
     level: number;
     //background
     background: Background;
+    grid: number[][];
     //block
     blocks: Blocks[];
     blockSize: number;
@@ -38,6 +39,7 @@ export default class Game {
         this.blockSize = 20;
         this.baseWidth =  18 * this.blockSize;
         this.baseHeight = 26 * this.blockSize;
+        this.grid = [];
         //game logic
         this.gameOver = false;
         this.level = 1;
@@ -61,6 +63,7 @@ export default class Game {
         this.swipeDistance = 50;
         this.left = 0;
         this.right = 0;
+        this.initGrid();
 
         this.resize(window.innerWidth, window.innerHeight);
 
@@ -72,43 +75,43 @@ export default class Game {
         });
 
       // Keyboard controls
-window.addEventListener('keydown', e => {
-    if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
-    this.blocks.forEach(block => {
-        block.update();
+    window.addEventListener('keydown', e => {
+        if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
+        this.blocks.forEach(block => {
+            block.update();
+        });
     });
-});
 
-window.addEventListener('keyup', e => {
-    const index = this.keys.indexOf(e.key);
-    if (index > -1) this.keys.splice(index, 1);
-});
+    window.addEventListener('keyup', e => {
+        const index = this.keys.indexOf(e.key);
+        if (index > -1) this.keys.splice(index, 1);
+    });
 
-// Touch controls
-this.canvas.addEventListener('touchstart', e => {
-    this.touchStartX = e.changedTouches[0].pageX;
-});
+    // Touch controls
+    this.canvas.addEventListener('touchstart', e => {
+        this.touchStartX = e.changedTouches[0].pageX;
+    });
 
-this.canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-});
+    this.canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+    });
 
-this.canvas.addEventListener('touchend', e => {
-    if (!this.gameOver) {
-        const touchEndX = e.changedTouches[0].pageX;
-        const swipeDistance = touchEndX - this.touchStartX;
+    this.canvas.addEventListener('touchend', e => {
+        if (!this.gameOver) {
+            const touchEndX = e.changedTouches[0].pageX;
+            const swipeDistance = touchEndX - this.touchStartX;
 
-        if (Math.abs(swipeDistance) > (this.swipeDistance * 2)) {
-            if (swipeDistance > 0) {
-                this.right = this.blockSize;
-                this.left = 0;
-            } else {
-                this.left = this.blockSize;
-                this.right = 0;
+            if (Math.abs(swipeDistance) > (this.swipeDistance * 2)) {
+                if (swipeDistance > 0) {
+                    this.right = this.blockSize;
+                    this.left = 0;
+                } else {
+                    this.left = this.blockSize;
+                    this.right = 0;
+                }
             }
         }
-    }
-});
+    });
 
     }
     resize(width: number, height: number) {  
@@ -165,6 +168,23 @@ this.canvas.addEventListener('touchend', e => {
             context.fillText('Your score: ' + ' - Level: ' + this.level, this.width * 0.5, this.height * 0.52);
         }
         context.restore();
+    }
+    initGrid() {
+        for (let i = 0; i < this.baseHeight / this.blockSize; i++) {
+            this.grid.push([]);
+            for (let j = 0; j < this.baseWidth / this.blockSize; j++) {
+                this.grid[i].push(0);
+            }
+        }
+    }
+    handlePeriodicEvents(deltaTime: number) {
+        if (this.eventTimer < this.eventInterval) {
+            this.eventTimer += deltaTime;
+            this.eventUpdate = false;
+        } else {
+            this.eventTimer = this.eventTimer % this.eventInterval;
+            this.eventUpdate = true;
+        }
     }
     newBlock() {
         this.rows = Math.floor(Math.random() * 3 + 2);  
