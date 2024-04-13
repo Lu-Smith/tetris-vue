@@ -170,10 +170,11 @@ export default class Game {
         context.restore();
     }
     initGrid() {
-        for (let i = 0; i < this.baseHeight / this.blockSize; i++) {
+        for (let i = 0; i < this.baseHeight/this.blockSize; i++) {
             this.grid.push([]);
-            for (let j = 0; j < this.baseWidth / this.blockSize; j++) {
-                this.grid[i].push(0);
+            let rowValue = i + 1;
+            for (let j = 0; j < this.baseWidth/this.blockSize; j++) {
+                this.grid[i].push(rowValue);
             }
         }
     }
