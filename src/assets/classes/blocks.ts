@@ -12,7 +12,7 @@ export default class Blocks {
     speedY: number;
     nextBlockTrigger: boolean;
     rows: number;
-    columns: number
+    columns: number;
 
     constructor (game: Game) {
         this.game = game;
@@ -27,6 +27,7 @@ export default class Blocks {
         this.blocks= [];
         this.nextBlockTrigger = false;
         this.create();
+
     }
     update() {
         if ((this.game.keys.indexOf('Enter') > -1 && this.speedY !== 0)) {
@@ -65,8 +66,28 @@ export default class Blocks {
             } else if (this.x >= this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize) {
                 this.x = this.game.canvas.width * 0.5 + this.game.background.scaledWidth * 0.5 - this.width + this.game.blockSize;
             }
-        }    
+        }   
     }
+    calculateCoveredCells() {
+    // Initialize coveredCells with the same dimensions as this.game.grid
+    const coveredCells: number[][] = [];
+
+    // Calculate the range of grid cells covered by the block
+    const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize);
+    const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize);
+    const startY = Math.floor(this.y / this.game.blockSize);
+    const endY = Math.floor((this.y + this.height) / this.game.blockSize);
+
+    // Iterate over the range of covered cells and update coveredCells
+    for (let y = startY; y < endY; y++) {
+        coveredCells.push([]);
+        for (let x = startX; x < endX; x++) {
+            coveredCells[y - startY].push(1);
+        }
+    }
+
+    console.log(coveredCells);
+    }   
     render(context: CanvasRenderingContext2D) {
         //veritcal movement
         if (this.y < this.game.background.bottom - this.height) { 
@@ -82,6 +103,7 @@ export default class Blocks {
             this.speedY = 0;
             if (!this.nextBlockTrigger) {
                 setTimeout(() => {
+                    if (!this.game.eventUpdate) this.calculateCoveredCells();
                     this.game.newBlock();
                 }, 1000)
                 this.nextBlockTrigger = true;
@@ -99,17 +121,20 @@ export default class Blocks {
                 let blockX = x * this.game.blockSize - this.game.blockSize * 0.5;
                 let blockY = y * this.game.blockSize;
                 let color = ''; 
-                if (this.game.rows === 1) {
-                    color = 'blue';
-                } else if (this.game.rows === 2) {
-                    color = 'orange';
-                } else if (this.game.rows === 3) {
-                    color = 'green';
-                } else {
-                    color = 'yellow';
+                let occupied = this.blocks.some(block => block.positionX === blockX && block.positionY === blockY);
+                if (!occupied) {
+                    if (this.game.rows === 1) {
+                        color = 'blue';
+                    } else if (this.game.rows === 2) {
+                        color = 'orange';
+                    } else if (this.game.rows === 3) {
+                        color = 'green';
+                    } else {
+                        color = 'yellow';
+                    }
+                    this.blocks.push(new Block(this.game, blockX, blockY, color));
                 }
-                this.blocks.push(new Block(this.game, blockX, blockY, color));
-            }
+                }
         } 
     }
     resize() {
