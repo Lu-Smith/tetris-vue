@@ -85,9 +85,8 @@ export default class Blocks {
     }
 
     for (let [y, x] of coveredCells) {
-    console.log(y-3, x);
         const rowIndex = y - 3;
-        this.game.grid[rowIndex][x] = 0;
+        this.game.grid[rowIndex][x - 2] = 0;
     }
     console.log(this.game.grid);
 }
