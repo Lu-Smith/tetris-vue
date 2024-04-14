@@ -13,7 +13,6 @@ export default class Blocks {
     nextBlockTrigger: boolean;
     rows: number;
     columns: number;
-    bottom: number;
     //helpers
     rowIndex: number | null;
     columnIndex: number | null;
@@ -30,7 +29,6 @@ export default class Blocks {
         this.speedY = 0;
         this.blocks= [];
         this.nextBlockTrigger = false;
-        this.bottom = this.game.background.bottom - this.height;
         this.create();
         //helpers
         this.rowIndex = null;
@@ -91,23 +89,27 @@ export default class Blocks {
 
         for (let [y, x] of coveredCells) {
             this.rowIndex = y - 3;
-            this.columnIndex = x - 12;
+            this.columnIndex = x - 1;
             this.game.grid[this.rowIndex][this.columnIndex] = 0;
         } 
     }
     render(context: CanvasRenderingContext2D) {
-        //veritcal movement
-        if (this.y < this.bottom) { 
-            if ((this.game.keys.indexOf('ArrowDown') > -1))   {
-                    this.speedY = 10 * this.game.speed;
+    //vertical boundries
+        let minHeight = Math.min(...this.game.minBottoms);
+        if (this.y < minHeight - this.height) { 
+            if ((this.game.keys.indexOf('ArrowDown') > -1)) {
+                this.speedY = 10 * this.game.speed;
             } else {
                 this.speedY = this.game.speed;
             }
-            this.y += this.speedY;
-        //vertical boundries
-        } else if (this.y >= this.bottom) {
+            this.y += this.speedY; 
+    //veritcal movement
+        } else if (this.y >= minHeight - this.height) {
             this.speedY = 0;
-            this.y = this.bottom;
+            for (let i = 0; i < this.game.minBottoms.length; i++) {
+                this.y = this.game.minBottoms[i] - this.height;
+                console.log(this.y);
+            }
             if (!this.nextBlockTrigger) {
                 setTimeout(() => {
                     if (!this.game.eventUpdate) {
@@ -117,7 +119,8 @@ export default class Blocks {
                 }, 1000);
                 this.nextBlockTrigger = true;
             }
-        };
+          
+        }
 
         this.blocks.forEach(block => {
             block.update(this.x, this.y);
