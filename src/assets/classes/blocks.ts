@@ -14,6 +14,7 @@ export default class Blocks {
     rows: number;
     columns: number;
     //helpers
+    bottom: number;
     rowIndex: number | null;
     columnIndex: number | null;
 
@@ -31,6 +32,7 @@ export default class Blocks {
         this.nextBlockTrigger = false;
         this.create();
         //helpers
+        this.bottom = this.game.background.bottom - this.height;
         this.rowIndex = null;
         this.columnIndex = null;
 
@@ -92,41 +94,40 @@ export default class Blocks {
             this.columnIndex = x - 2;
             this.game.grid[this.rowIndex][this.columnIndex] = 0;
             this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
+            this.bottom = this.game.minBottoms[this.columnIndex];
         } 
     }
     render(context: CanvasRenderingContext2D) {
-    //vertical boundries
-        let minHeight = Math.min(...this.game.minBottoms);
-        console.log(minHeight);
-        if (this.y < minHeight - this.height) { 
             if ((this.game.keys.indexOf('ArrowDown') > -1)) {
                 this.speedY = 10 * this.game.speed;
             } else {
                 this.speedY = this.game.speed;
             }
-            this.y += this.speedY; 
-    //veritcal movement
-        } else if (this.y >= minHeight - this.height) {
-            this.speedY = 0;
-            for (let i = 0; i < this.game.minBottoms.length; i++) {
-                this.y = this.game.minBottoms[i] - this.height;
-            }
-            if (!this.nextBlockTrigger) {
-                setTimeout(() => {
-                    if (!this.game.eventUpdate) {
-                        this.calculateCoveredCells();
-                        this.game.newBlock(); 
-                    }
-                }, 1000);
-                this.nextBlockTrigger = true;
-            }
-          
-        }
-
+    
         this.blocks.forEach(block => {
+            if (this.y < this.bottom - this.height) { 
+                //veritcal movement
+                this.y += this.speedY/5; 
+            } else if (this.y >= this.bottom - this.height) {
+                //vertical boundries
+                this.speedY = 0;
+                this.y = this.bottom;
+            }
             block.update(this.x, this.y);
             block.draw(context);
         })
+
+        console.log(this.game.minBottoms);
+
+        if (!this.nextBlockTrigger && this.speedY === 0) {
+            setTimeout(() => {
+                if (!this.game.eventUpdate) {
+                    this.calculateCoveredCells();
+                    this.game.newBlock(); 
+                }
+            }, 1000);
+            this.nextBlockTrigger = true;
+        }
     }
     create() {
         for (let y = 0; y < this.rows; y++ ) {
@@ -134,20 +135,17 @@ export default class Blocks {
                 let blockX = x * this.game.blockSize - this.game.blockSize * 0.5;
                 let blockY = y * this.game.blockSize;
                 let color = ''; 
-                let occupied = this.blocks.some(block => block.positionX === blockX && block.positionY === blockY);
-                if (!occupied) {
-                    if (this.game.rows === 1) {
-                        color = 'blue';
-                    } else if (this.game.rows === 2) {
-                        color = 'orange';
-                    } else if (this.game.rows === 3) {
-                        color = 'green';
-                    } else {
-                        color = 'yellow';
-                    }
-                    this.blocks.push(new Block(this.game, blockX, blockY, color));
+                if (this.game.rows === 1) {
+                    color = 'blue';
+                } else if (this.game.rows === 2) {
+                    color = 'orange';
+                } else if (this.game.rows === 3) {
+                    color = 'green';
+                } else {
+                    color = 'yellow';
                 }
-                }
+                this.blocks.push(new Block(this.game, blockX, blockY, color));
+            }
         } 
     }
     resize() {
