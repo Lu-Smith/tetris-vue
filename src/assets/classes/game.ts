@@ -10,6 +10,7 @@ export default class Game {
     //game logic
     gameOver: boolean;
     level: number;
+    minBottoms: number[];
     //background
     background: Background;
     grid: number[][];
@@ -40,11 +41,12 @@ export default class Game {
         this.baseWidth =  18 * this.blockSize;
         this.baseHeight = 26 * this.blockSize;
         this.grid = [];
+        //background
+        this.background = new Background(this);
         //game logic
         this.gameOver = false;
         this.level = 1;
-        //background
-        this.background = new Background(this);
+        this.minBottoms = new Array(this.baseWidth / this.blockSize).fill(this.background.bottom);
         //block 
         this.blocks = [];
         this.blocks.push(new Blocks(this));
@@ -188,18 +190,22 @@ export default class Game {
         }
     }
     newBlock() {
-        const previousBottom = this.blocks.length > 0 ? this.blocks[this.blocks.length - 1].bottom : this.background.bottom - this.baseHeight;
-
         this.rows = Math.floor(Math.random() * 3 + 2);  
         if (this.rows === 4) {
             this.columns = 1;
         } else {
             this.columns = Math.floor(Math.random() * 2 + 2);
         } 
-        this.blocks.push(new Blocks(this));
 
-        if (this.blocks.length > 1) {
-            this.blocks[this.blocks.length - 1].bottom = previousBottom - this.blocks[this.blocks.length - 1].height;
+        // Check if there are any 0s in each column of the grid
+        for (let j = 0; j < this.grid[0].length; j++) {
+            for (let i = 0; i < this.grid.length; i++) {
+                if (this.grid[i][j] === 0) {
+                    this.minBottoms[j] -= this.blockSize;
+                }
+            }
         }
+        const newBlock = new Blocks(this);
+        this.blocks.push(newBlock);
     }
 }
