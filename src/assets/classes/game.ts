@@ -197,14 +197,6 @@ export default class Game {
             this.columns = Math.floor(Math.random() * 2 + 2);
         } 
 
-        // Check if there are any 0s in each column of the grid
-        for (let j = 0; j < this.grid[0].length; j++) {
-            for (let i = 0; i < this.grid.length; i++) {
-                if (this.grid[i][j] === 0) {
-                    this.minBottoms[j] -= this.blockSize;
-                }
-            }
-        }
         const newBlock = new Blocks(this);
         this.blocks.push(newBlock);
     }

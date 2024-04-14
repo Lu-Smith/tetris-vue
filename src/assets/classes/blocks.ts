@@ -89,13 +89,15 @@ export default class Blocks {
 
         for (let [y, x] of coveredCells) {
             this.rowIndex = y - 3;
-            this.columnIndex = x - 1;
+            this.columnIndex = x - 2;
             this.game.grid[this.rowIndex][this.columnIndex] = 0;
+            this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
         } 
     }
     render(context: CanvasRenderingContext2D) {
     //vertical boundries
         let minHeight = Math.min(...this.game.minBottoms);
+        console.log(minHeight);
         if (this.y < minHeight - this.height) { 
             if ((this.game.keys.indexOf('ArrowDown') > -1)) {
                 this.speedY = 10 * this.game.speed;
@@ -108,7 +110,6 @@ export default class Blocks {
             this.speedY = 0;
             for (let i = 0; i < this.game.minBottoms.length; i++) {
                 this.y = this.game.minBottoms[i] - this.height;
-                console.log(this.y);
             }
             if (!this.nextBlockTrigger) {
                 setTimeout(() => {
