@@ -13,6 +13,10 @@ export default class Blocks {
     nextBlockTrigger: boolean;
     rows: number;
     columns: number;
+    bottom: number;
+    //helpers
+    rowIndex: number | null;
+    columnIndex: number | null;
 
     constructor (game: Game) {
         this.game = game;
@@ -26,7 +30,11 @@ export default class Blocks {
         this.speedY = 0;
         this.blocks= [];
         this.nextBlockTrigger = false;
+        this.bottom = this.game.background.bottom - this.height;
         this.create();
+        //helpers
+        this.rowIndex = null;
+        this.columnIndex = null;
 
     }
     update() {
@@ -69,30 +77,27 @@ export default class Blocks {
         }   
     }
     calculateCoveredCells() {
-        // Initialize coveredCells with the same dimensions as this.game.grid
         const coveredCells: number[][] = [];
-
-        // Calculate the range of grid cells covered by the block
         const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize);
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize);
         const startY = Math.floor(this.y / this.game.blockSize);
         const endY = Math.floor((this.y + this.height) / this.game.blockSize);
 
-    for (let y = startY; y < endY; y++) {
-        for (let x = startX; x < endX; x++) {
-            coveredCells.push([y, x]);                                
+        for (let y = startY; y < endY; y++) {
+            for (let x = startX; x < endX; x++) {
+                coveredCells.push([y, x]);                                
+            }
         }
-    }
 
-    for (let [y, x] of coveredCells) {
-        const rowIndex = y - 3;
-        this.game.grid[rowIndex][x - 2] = 0;
+        for (let [y, x] of coveredCells) {
+            this.rowIndex = y - 3;
+            this.columnIndex = x - 12;
+            this.game.grid[this.rowIndex][this.columnIndex] = 0;
+        } 
     }
-    console.log(this.game.grid);
-}
     render(context: CanvasRenderingContext2D) {
         //veritcal movement
-        if (this.y < this.game.background.bottom - this.height) { 
+        if (this.y < this.bottom) { 
             if ((this.game.keys.indexOf('ArrowDown') > -1))   {
                     this.speedY = 10 * this.game.speed;
             } else {
@@ -100,14 +105,16 @@ export default class Blocks {
             }
             this.y += this.speedY;
         //vertical boundries
-        } else if (this.y >= this.game.background.bottom - this.height) {
-            this.y = this.game.background.bottom - this.height;
+        } else if (this.y >= this.bottom) {
             this.speedY = 0;
+            this.y = this.bottom;
             if (!this.nextBlockTrigger) {
                 setTimeout(() => {
-                    if (!this.game.eventUpdate) this.calculateCoveredCells();
-                    this.game.newBlock();
-                }, 1000)
+                    if (!this.game.eventUpdate) {
+                        this.calculateCoveredCells();
+                        this.game.newBlock(); 
+                    }
+                }, 1000);
                 this.nextBlockTrigger = true;
             }
         };
