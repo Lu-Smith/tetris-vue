@@ -78,16 +78,13 @@ export default class Blocks {
     }
     calculateCoveredCells() {
         const coveredCells: number[][] = [];
+
         const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
-    - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
+        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
-    - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
-        const startY = Math.floor(this.y / this.game.blockSize - 65 / this.game.blockSize);
-        const endY = Math.floor((this.y + this.height - 65) / this.game.blockSize);
+        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
 
-        console.log(startX, endX);
-
-        for (let y = startY; y < endY; y++) {
+        for (let y = this.game.startY; y < this.game.endY; y++) {
             for (let x = startX; x < endX; x++) {
                 coveredCells.push([y, x]);                                
             }
@@ -100,16 +97,42 @@ export default class Blocks {
             this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
             this.bottom = this.game.minBottoms[this.columnIndex];
         } 
+    }
+    newCalculateCoveredCells(startY: number, endY: number) {
+        const coveredCells: number[][] = [];
+
+        const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
+        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
+        const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
+        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
+     
+        console.log(this.game.grid);
+
+        for (let y = startY; y < endY; y++) {
+            for (let x = startX; x < endX; x++) {
+                coveredCells.push([y, x]);                                
+            }
+        }
+
         console.log(coveredCells);
+        for (let [y, x] of coveredCells) {
+            this.rowIndex = y + 1;
+            this.columnIndex = x;
+            this.game.grid[this.rowIndex][this.columnIndex] = 0;
+            this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
+            this.bottom = this.game.minBottoms[this.columnIndex];
+        } 
     }
     render(context: CanvasRenderingContext2D) {
-            if ((this.game.keys.indexOf('ArrowDown') > -1)) {
-                this.speedY = 10 * this.game.speed;
-            } else {
-                this.speedY = this.game.speed;
-            }
+        if ((this.game.keys.indexOf('ArrowDown') > -1)) {
+            this.speedY = 10 * this.game.speed;
+        } else {
+            this.speedY = this.game.speed;
+        }
 
-    
+        let startY: number = 0; 
+        let endY: number = 0; 
+
         this.blocks.forEach(block => {
             if (this.y < this.bottom - this.height) { 
                 //veritcal movement
@@ -118,18 +141,20 @@ export default class Blocks {
                 //vertical boundries
                 this.speedY = 0;
                 this.y = this.bottom;
-              
+                [startY, endY] = this.game.calculateNewBottom(this.bottom, this.height);
             }
             block.update(this.x, this.y);
             block.draw(context);
-    
         })
 
-        // console.log(this.game.minBottoms);
-
-        if (!this.nextBlockTrigger && this.speedY === 0) {
-            this.calculateCoveredCells();
+        if (!this.nextBlockTrigger && this.speedY === 0) {  
             if (!this.game.eventUpdate) {
+                if (!this.game.newBottom) { 
+                    this.calculateCoveredCells();
+                } else {
+                    console.log('yes', startY, endY);
+                    this.newCalculateCoveredCells(startY, endY);
+                }
                 this.game.newBlock(); 
             }
             this.nextBlockTrigger = true;
