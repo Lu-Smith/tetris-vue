@@ -21,6 +21,9 @@ export default class Game {
     rows: number;
     speed: number;
     rotation: number;
+    startY: number;
+    endY: number;
+    newBottom: boolean;
     //timer
     timer: number;
     eventTimer: number;
@@ -54,6 +57,9 @@ export default class Game {
         this.columns = 1;
         this.speed = 0;
         this.rotation = 0;
+        this.startY = Math.floor(this.background.bottom - this.height / this.blockSize - 65 / this.blockSize);
+        this.endY = Math.floor((this.background.bottom - this.height + this.height - 65) / this.blockSize);
+        this.newBottom = false;
         //timer
         this.timer = 0;
         this.eventTimer = 0;
@@ -189,7 +195,13 @@ export default class Game {
             this.eventUpdate = true;
         }
     }
-    newBlock() {
+    calculateNewBottom(bottom: number, height: number) {
+        this.startY = Math.floor(bottom / this.blockSize - 65 / this.blockSize);
+        this.endY = Math.floor((bottom + height - 65) / this.blockSize);
+        this.newBottom = true;
+        return [this.startY, this.endY];
+    }
+    newBlock() { 
         this.rows = Math.floor(Math.random() * 3 + 2);  
         if (this.rows === 4) {
             this.columns = 1;
