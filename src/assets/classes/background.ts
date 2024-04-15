@@ -29,7 +29,7 @@ export default class Background {
                 const y = 65 + i * this.game.blockSize + this.game.blockSize / 2;
     
                 // Draw number
-                context.fillText(this.game.grid[i][j].toString(), x - 3, y + 4);
+                context.fillText(this.game.grid[i][j].toString(), x, y);
     
                 // Draw vertical grid line
                 context.beginPath();
