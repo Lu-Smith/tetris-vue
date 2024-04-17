@@ -101,16 +101,12 @@ export default class Blocks {
         for (let [y, x] of coveredCells) {
             this.rowIndex = y + 1;
             this.columnIndex = x;
-            if (this.game.grid[this.rowIndex][this.columnIndex] !== 0) {
-                this.updateGrid(this.rowIndex, this.columnIndex)
-            } else {
                 while (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] === 0) {
                     this.rowIndex--;
                 }
                 if (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] !== 0) {
                     this.updateGrid(this.rowIndex, this.columnIndex);
                 }
-            }
 
             console.log('1', this.bottom);
         } 
