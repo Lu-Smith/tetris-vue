@@ -76,52 +76,52 @@ export default class Blocks {
             }
         }   
     }
-    calculateCoveredCells() {
-        const coveredCells: number[][] = [];
-
-        const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
-        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
-        const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
-        - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
-
-        for (let y = this.game.startY; y < this.game.endY; y++) {
-            for (let x = startX; x < endX; x++) {
-                coveredCells.push([y, x]);                                
-            }
-        }
-
-        for (let [y, x] of coveredCells) {
-            this.rowIndex = y + 1;
-            this.columnIndex = x;
-            this.game.grid[this.rowIndex][this.columnIndex] = 0;
-            this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
-            this.bottom = this.game.minBottoms[this.columnIndex];
-        } 
+    updateGrid(row: number, column: number) {
+        this.game.grid[row][column] = 0;
+        this.game.minBottoms[column] -= this.game.blockSize;
+        this.bottom = this.game.minBottoms[column];
     }
-    newCalculateCoveredCells(startY: number, endY: number) {
+    calculateCoveredCells(context: CanvasRenderingContext2D) {
         const coveredCells: number[][] = [];
 
         const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
-     
-        console.log(this.game.grid);
 
-        for (let y = startY; y < endY; y++) {
-            for (let x = startX; x < endX; x++) {
-                coveredCells.push([y, x]);                                
+        for (let x = startX; x < endX; x++) {
+            const startY = Math.floor(this.bottom / this.game.blockSize - 65 / this.game.blockSize);
+            const endY = Math.floor((this.bottom + this.height - 65) / this.game.blockSize);
+    
+            for (let y = startY; y < endY; y++) {
+                coveredCells.push([y, x]);
             }
         }
-
-        console.log(coveredCells);
+        
         for (let [y, x] of coveredCells) {
             this.rowIndex = y + 1;
             this.columnIndex = x;
-            this.game.grid[this.rowIndex][this.columnIndex] = 0;
-            this.game.minBottoms[this.columnIndex] -= this.game.blockSize;
-            this.bottom = this.game.minBottoms[this.columnIndex];
+            if (this.game.grid[this.rowIndex][this.columnIndex] !== 0) {
+                this.updateGrid(this.rowIndex, this.columnIndex)
+            } else {
+                while (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] === 0) {
+                    this.rowIndex--;
+                }
+                if (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] !== 0) {
+                    this.updateGrid(this.rowIndex, this.columnIndex);
+                }
+            }
+
+            console.log('1', this.bottom);
         } 
+
+         this.blocks.forEach(block => {  
+            console.log('2', this.bottom);              
+                block.update(this.x, this.bottom);
+                block.draw(context);
+            })
+
+        console.log(this.game.grid);
     }
     render(context: CanvasRenderingContext2D) {
         if ((this.game.keys.indexOf('ArrowDown') > -1)) {
@@ -130,8 +130,7 @@ export default class Blocks {
             this.speedY = this.game.speed;
         }
 
-        let startY: number = 0; 
-        let endY: number = 0; 
+        this.y += this.speedY;
 
         this.blocks.forEach(block => {
             if (this.y < this.bottom - this.height) { 
@@ -141,20 +140,15 @@ export default class Blocks {
                 //vertical boundries
                 this.speedY = 0;
                 this.y = this.bottom;
-                [startY, endY] = this.game.calculateNewBottom(this.bottom, this.height);
             }
+
             block.update(this.x, this.y);
             block.draw(context);
         })
 
         if (!this.nextBlockTrigger && this.speedY === 0) {  
             if (!this.game.eventUpdate) {
-                if (!this.game.newBottom) { 
-                    this.calculateCoveredCells();
-                } else {
-                    console.log('yes', startY, endY);
-                    this.newCalculateCoveredCells(startY, endY);
-                }
+                this.calculateCoveredCells(context);
                 this.game.newBlock(); 
             }
             this.nextBlockTrigger = true;
