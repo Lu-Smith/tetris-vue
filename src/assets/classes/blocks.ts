@@ -89,35 +89,52 @@ export default class Blocks {
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
 
+        let columns = [];
+        let cells = 0;
+     
         for (let x = startX; x < endX; x++) {
             const startY = Math.floor(this.bottom / this.game.blockSize - 65 / this.game.blockSize);
             const endY = Math.floor((this.bottom + this.height - 65) / this.game.blockSize);
-    
+            columns.push(x);
+
             for (let y = startY; y < endY; y++) {
-                coveredCells.push([y, x]);
+                coveredCells.push([y, x]);   
+                cells++;
             }
         }
-        
+       
         for (let [y, x] of coveredCells) {
             this.rowIndex = y + 1;
             this.columnIndex = x;
-                while (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] === 0) {
-                    this.rowIndex--;
+
+            let rows = cells/columns.length;
+
+            let foundZero;
+
+            if (this.rowIndex >= 0) {
+                for (let r = 0; r < rows; r++) { 
+                    while (this.game.grid[this.rowIndex + r][this.columnIndex] === 0) {
+                        console.log('yes');
+                        foundZero = true;
+                        this.rowIndex--;
+                    } 
+                    if (this.game.grid[this.rowIndex + r][this.columnIndex] !== 0) {
+                        foundZero = false;
+                        break; // and exit the loop
+                    }
                 }
-                if (this.rowIndex >= 0 && this.game.grid[this.rowIndex][this.columnIndex] !== 0) {
-                    this.updateGrid(this.rowIndex, this.columnIndex);
-                }
-
-            console.log('1', this.bottom);
-        } 
-
-         this.blocks.forEach(block => {  
-            console.log('2', this.bottom);              
-                block.update(this.x, this.bottom);
-                block.draw(context);
-            })
-
-        console.log(this.game.grid);
+            }
+            if (!foundZero) {
+                this.updateGrid(this.rowIndex, this.columnIndex);
+                console.log(this.game.grid);
+                
+            } 
+        }
+    
+        this.blocks.forEach(block => {            
+            block.update(this.x, this.bottom);
+            block.draw(context);
+        })
     }
     render(context: CanvasRenderingContext2D) {
         if ((this.game.keys.indexOf('ArrowDown') > -1)) {
@@ -125,8 +142,6 @@ export default class Blocks {
         } else {
             this.speedY = this.game.speed;
         }
-
-        this.y += this.speedY;
 
         this.blocks.forEach(block => {
             if (this.y < this.bottom - this.height) { 
