@@ -83,58 +83,52 @@ export default class Blocks {
     }
     calculateCoveredCells(context: CanvasRenderingContext2D) {
         const coveredCells: number[][] = [];
+        let covered = false;
+        let columns = [];
 
         const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
 
-        let columns = [];
-        let cells = 0;
-     
         for (let x = startX; x < endX; x++) {
             const startY = Math.floor(this.bottom / this.game.blockSize - 65 / this.game.blockSize);
             const endY = Math.floor((this.bottom + this.height - 65) / this.game.blockSize);
             columns.push(x);
-
+   
             for (let y = startY; y < endY; y++) {
-                coveredCells.push([y, x]);   
-                cells++;
-            }
-        }
-       
-        for (let [y, x] of coveredCells) {
-            this.rowIndex = y + 1;
-            this.columnIndex = x;
-
-            let rows = cells/columns.length;
-
-            let foundZero;
-
-            if (this.rowIndex >= 0) {
-                for (let r = 0; r < rows; r++) { 
-                    while (this.game.grid[this.rowIndex + r][this.columnIndex] === 0) {
-                        console.log('yes');
-                        foundZero = true;
-                        this.rowIndex--;
-                    } 
-                    if (this.game.grid[this.rowIndex + r][this.columnIndex] !== 0) {
-                        foundZero = false;
-                        break; // and exit the loop
+             
+                for (let i = 0; i < this.game.grid.length; i++) {
+                    if (this.game.grid[i][x] === 0) {
+                        covered = true;
+                    } else {
+                        covered = false;
                     }
                 }
+                coveredCells.push([y, x]);
             }
-            if (!foundZero) {
-                this.updateGrid(this.rowIndex, this.columnIndex);
-                console.log(this.game.grid);
-                
-            } 
         }
-    
-        this.blocks.forEach(block => {            
-            block.update(this.x, this.bottom);
-            block.draw(context);
-        })
+        
+        for (let [y, x] of coveredCells) {
+            if (covered) {
+                for (let r = 0; r < coveredCells.length/columns.length; r++ ) {
+                    console.log(y);
+                    if (y >= 0) y--;
+                    console.log(y);
+                }
+                covered = false;
+            }
+            this.rowIndex = y + 1;
+            this.columnIndex = x;
+            this.updateGrid(this.rowIndex, this.columnIndex)
+        } 
+
+         this.blocks.forEach(block => {              
+                block.update(this.x, this.bottom);
+                block.draw(context);
+            })
+
+        console.log(this.game.grid);
     }
     render(context: CanvasRenderingContext2D) {
         if ((this.game.keys.indexOf('ArrowDown') > -1)) {
@@ -152,7 +146,6 @@ export default class Blocks {
                 this.speedY = 0;
                 this.y = this.bottom;
             }
-
             block.update(this.x, this.y);
             block.draw(context);
         })
