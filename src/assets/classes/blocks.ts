@@ -88,19 +88,34 @@ export default class Blocks {
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
         const endX = Math.floor((this.x + this.width - this.game.blockSize * 0.5) / this.game.blockSize
         - (this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5) / this.game.blockSize);
+        
+        let minStartYArray: number[] = [];
+        let minEndYArray: number[] = [];
 
         for (let x = startX; x < endX; x++) {
-            const startY = Math.floor(this.bottom / this.game.blockSize - 65 / this.game.blockSize);
-            const endY = Math.floor((this.bottom + this.height - 65) / this.game.blockSize);
-   
-            for (let y = startY; y < endY; y++) {
-                let n = 0;
-                for (let i = 0; i < this.game.grid.length; i++) {
-                    if (this.game.grid[i][x] === 0) {
-                        n++;
-                    } 
-                }                  
-                coveredCells.push([y - n, x]);
+            let b = 0;
+            for (let i = 0; i < this.game.grid.length; i++) {
+                if (this.game.grid[i][x] === 0) {
+                    b++;
+                } 
+            } 
+            const startY = Math.floor((this.bottom / this.game.blockSize - 65 / this.game.blockSize - b));
+            const endY = Math.floor(((this.bottom + this.height - 65) / this.game.blockSize) - b);
+
+            minStartYArray.push(startY);
+            minEndYArray.push(endY);
+        }
+        
+        console.log(minStartYArray);
+        console.log(minEndYArray);
+
+        let minStartY = Math.min(...minStartYArray);
+        let minEndY = Math.min(...minEndYArray);
+
+
+        for (let x = startX; x < endX; x++) {
+            for (let y = minStartY; y < minEndY; y++) {
+                coveredCells.push([y, x]);
             }
         }
 
