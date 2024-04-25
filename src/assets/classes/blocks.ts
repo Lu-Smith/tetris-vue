@@ -78,8 +78,10 @@ export default class Blocks {
     }
     updateGrid(row: number, column: number) {
         this.game.grid[row][column] = 0;
-        this.game.minBottoms[column] -= this.game.blockSize;
+        console.log('row', row);
+        this.game.minBottoms[column] = this.game.background.bottom - this.height - ((25 - row )* this.game.blockSize);
         this.bottom = this.game.minBottoms[column];
+        console.log(this.bottom);
     }
     calculateCoveredCells(context: CanvasRenderingContext2D) {
         const coveredCells: number[][] = [];
@@ -106,9 +108,6 @@ export default class Blocks {
             minEndYArray.push(endY);
         }
         
-        console.log(minStartYArray);
-        console.log(minEndYArray);
-
         let minStartY = Math.min(...minStartYArray);
         let minEndY = Math.min(...minEndYArray);
 
