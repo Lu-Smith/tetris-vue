@@ -83,7 +83,6 @@ export default class Blocks {
     }
     calculateCoveredCells(context: CanvasRenderingContext2D) {
         const coveredCells: number[][] = [];
-        let covered = false;
         let columns = [];
 
         const startX = Math.floor((this.x - this.game.blockSize * 0.5) / this.game.blockSize
@@ -97,20 +96,18 @@ export default class Blocks {
             columns.push(x);
    
             for (let y = startY; y < endY; y++) {
+                let n = 0;
                 for (let i = 0; i < this.game.grid.length; i++) {
                     if (this.game.grid[i][x] === 0) {
-                        covered = true;
-                    } else {
-                        covered = false;
-                    }
-                }
-                if (covered) coveredCells.push([y - 1, x]);
-                else if (!covered) coveredCells.push([y, x]); 
+                        n++;
+                        console.log(n);
+                    } 
+                }                  
+                coveredCells.push([y - n, x]);
             }
         }
 
         for (let [y, x] of coveredCells) {
-        
             this.rowIndex = y + 1;
             this.columnIndex = x;
             this.updateGrid(this.rowIndex, this.columnIndex)
