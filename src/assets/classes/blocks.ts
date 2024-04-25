@@ -97,7 +97,6 @@ export default class Blocks {
             columns.push(x);
    
             for (let y = startY; y < endY; y++) {
-             
                 for (let i = 0; i < this.game.grid.length; i++) {
                     if (this.game.grid[i][x] === 0) {
                         covered = true;
@@ -105,23 +104,17 @@ export default class Blocks {
                         covered = false;
                     }
                 }
-                coveredCells.push([y, x]);
+                if (covered) coveredCells.push([y - 1, x]);
+                else if (!covered) coveredCells.push([y, x]); 
             }
         }
-        
+
         for (let [y, x] of coveredCells) {
-            if (covered) {
-                for (let r = 0; r < coveredCells.length/columns.length; r++ ) {
-                    console.log(y);
-                    if (y >= 0) y--;
-                    console.log(y);
-                }
-                covered = false;
-            }
+        
             this.rowIndex = y + 1;
             this.columnIndex = x;
             this.updateGrid(this.rowIndex, this.columnIndex)
-        } 
+            } 
 
          this.blocks.forEach(block => {              
                 block.update(this.x, this.bottom);
