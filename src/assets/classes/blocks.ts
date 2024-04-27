@@ -17,6 +17,7 @@ export default class Blocks {
     bottom: number;
     rowIndex: number | null;
     columnIndex: number | null;
+    minCol: number;
 
     constructor (game: Game) {
         this.game = game;
@@ -35,7 +36,7 @@ export default class Blocks {
         this.bottom = this.game.background.bottom - this.height;
         this.rowIndex = null;
         this.columnIndex = null;
-
+        this.minCol = this.game.canvas.width * 0.5 - this.game.background.scaledWidth * 0.5 + this.game.blockSize;
     }
     update() {
         if ((this.game.keys.indexOf('Enter') > -1 && this.speedY !== 0)) {
@@ -78,10 +79,8 @@ export default class Blocks {
     }
     updateGrid(row: number, column: number) {
         this.game.grid[row][column] = 0;
-        console.log('row', row);
         this.game.minBottoms[column] = this.game.background.bottom - this.height - ((25 - row )* this.game.blockSize);
         this.bottom = this.game.minBottoms[column];
-        console.log(this.bottom);
     }
     calculateCoveredCells(context: CanvasRenderingContext2D) {
         const coveredCells: number[][] = [];
@@ -132,11 +131,24 @@ export default class Blocks {
         console.log(this.game.grid);
     }
     render(context: CanvasRenderingContext2D) {
-        if ((this.game.keys.indexOf('ArrowDown') > -1)) {
+        // console.log(this.minCol, this.x);
+        // let nCol = this.minCol;
+        // for ( let c = 0; c < this.game.baseWidth / this.game.blockSize; c++) {
+        //     nCol += this.game.blockSize;
+        //     console.log(nCol);
+        // }
+        // if (this.game.grid[(this.x - this.minCol/this.game.blockSize)][this.y - this.bottom] === 0) {
+
+        // }
+        //if(this.x === this.minRow) -> column = 0, there is this.baseWidth / this.blockSize columns
+        //if(this.x === this.minRow + this.game.blockSize) -> column = 1, there is this.baseWidth / this.blockSize columns
+        // this.minBottoms = new Array(this.baseWidth / this.blockSize).fill(this.background.bottom);
+        if ((this.game.keys.indexOf('ArrowDown') > -1 && this.y < this.bottom - this.height)) {
             this.speedY = 10 * this.game.speed;
-        } else {
+        } else if (this.y < this.bottom - this.height) {
             this.speedY = this.game.speed;
         }
+        console.log(this.y);
 
         this.blocks.forEach(block => {
             if (this.y < this.bottom - this.height) { 
